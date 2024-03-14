@@ -5,12 +5,6 @@ import time
 
 start_time = time.time()
 
-desiredThreadsNumber = 8
-threadsNumber = min(max(1,desiredThreadsNumber), os.cpu_count())
-
-port = '5000'
-baseUrl = f'http://localhost:{port}'
-wordListFileName = "dir_list.txt"
 
 #open a text file, and create create a list of words from it
 def createWordListFromFile(filename):
@@ -28,12 +22,13 @@ def createWordListFromFile(filename):
 
 
 #divide a list into x sub-lists, here x represents the threads number and the list is the words list
-def divideList(list, x):
+def divideList(word_list, x):
     # Calculate the length of each sublist
-    sublist_length = (len(list) + x - 1) // x  # Round up division
+    sublist_length = (len(word_list) + x - 1) // x  # Round up division
     # Create sublists using list comprehension
-    sublists = [list[i:i+sublist_length] for i in range(0, len(list), sublist_length)]
+    sublists = [word_list[i:i+sublist_length] for i in range(0, len(word_list), sublist_length)]
     return sublists
+
 
 #check with http response status code if the path from request is accessible and not protected
 def isAccessiblePath(statusCode):
@@ -53,6 +48,8 @@ def isAccessiblePath(statusCode):
     return True
 
 pathList = []
+
+
 #perform request with different path (for word from a word list), then collect the accessible and not protected ones
 def collectPathList(wordDict, threadNumber):
     for word in wordDict:
@@ -63,21 +60,24 @@ def collectPathList(wordDict, threadNumber):
         if isAccessiblePath(response.status_code):
             pathList.append(url)
 
+port = '5000'
+baseUrl = f'http://localhost:{port}'
+wordListFileName = "dir_list.txt"
+desiredThreadsCount = 8 #specifie the number of threads you want
+threadsCount = min(max(1,desiredThreadsCount), os.cpu_count())
 
 wordList = createWordListFromFile(wordListFileName)
 #collectPathList(wordList)
-subList = divideList(wordList,threadsNumber)
+subList = divideList(wordList,threadsCount)
 print(len(subList))
 
-
 threads = list()
-for index in range(threadsNumber):
+for index in range(threadsCount):
     x = threading.Thread(target=collectPathList, args=(subList[index],index))
     threads.append(x)
     x.start()
 for index, thread in enumerate(threads):
         thread.join()
-
 
 # display all paths collected
 print("Accessible paths:")
@@ -85,6 +85,5 @@ for url in pathList:
     print(url)
 
 end_time = time.time()
-
 execution_time = end_time - start_time
 print("Execution time:", execution_time, "seconds")
