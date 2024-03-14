@@ -1,22 +1,39 @@
 import requests
 import os
+import threading
+import time
 
-desiredThreadsNumber = 2
-threadsNumber = min(desiredThreadsNumber, os.cpu_count())
+start_time = time.time()
+
+desiredThreadsNumber = 8
+threadsNumber = min(max(1,desiredThreadsNumber), os.cpu_count())
 
 port = '5000'
 baseUrl = f'http://localhost:{port}'
 wordListFileName = "dir_list.txt"
 
-#open the word list file, and stop the script execution if error occurs
-try:
-    wordList = open(wordListFileName, 'r')
-except Exception as e:
-    print('Word list file cannot be opened:', wordListFileName)
-    print('Error:', e)
-    exit()
+#open a text file, and create create a list of words from it
+def createWordListFromFile(filename):
+    wordlist = []
+    try:
+        with open(filename, 'r') as file:
+            for line in file:
+                # Remove leading and trailing whitespace, then append to the list
+                wordlist.append(line.strip())
+        return wordlist
+    except Exception as e:
+        print('Word list file cannot be opened:', filename)
+        print('Error:', e)
+        exit()
 
-pathList = []
+
+#divide a list into x sub-lists, here x represents the threads number and the list is the words list
+def divideList(list, x):
+    # Calculate the length of each sublist
+    sublist_length = (len(list) + x - 1) // x  # Round up division
+    # Create sublists using list comprehension
+    sublists = [list[i:i+sublist_length] for i in range(0, len(list), sublist_length)]
+    return sublists
 
 #check with http response status code if the path from request is accessible and not protected
 def isAccessiblePath(statusCode):
@@ -35,22 +52,39 @@ def isAccessiblePath(statusCode):
     # -> (500-599) except for 511
     return True
 
+pathList = []
 #perform request with different path (for word from a word list), then collect the accessible and not protected ones
-def collectPathList(wordDict):
+def collectPathList(wordDict, threadNumber):
     for word in wordDict:
         word = word.rstrip()
-        print(f'trying {word}')
+        print(f'thead {threadNumber} - trying {word}')
         url = f'{baseUrl}/{word}'
         response = requests.get(url)
         if isAccessiblePath(response.status_code):
             pathList.append(url)
 
 
-collectPathList(wordList)
+wordList = createWordListFromFile(wordListFileName)
+#collectPathList(wordList)
+subList = divideList(wordList,threadsNumber)
+print(len(subList))
+
+
+threads = list()
+for index in range(threadsNumber):
+    x = threading.Thread(target=collectPathList, args=(subList[index],index))
+    threads.append(x)
+    x.start()
+for index, thread in enumerate(threads):
+        thread.join()
+
 
 # display all paths collected
 print("Accessible paths:")
 for url in pathList:
     print(url)
 
-print("CPUs:",threadsNumber)
+end_time = time.time()
+
+execution_time = end_time - start_time
+print("Execution time:", execution_time, "seconds")
