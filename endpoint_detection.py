@@ -15,11 +15,11 @@ pathList = []
 
 #check with http response status code if the path from request is accessible and not protected
 def isAccessiblePath(statusCode):
-    #get client error status code, resource protected or type of request not allowed by the server
+    #get client error status code, resource protected or not available ; type of request not allowed by the server
     if (statusCode in (401,403,404,405,407,410,414,418,421,451)):
         return False
     #get server error status code, need network authentication
-    if (statusCode in (511)):
+    if (statusCode == 511):
         return False
     #get information response status code   -> (100-199)
     #get successful response status code    -> (200-299)
@@ -30,7 +30,7 @@ def isAccessiblePath(statusCode):
     # -> (500-599) except for 511
     return True
 
-#perform request for each different poth in the word list file, then collect the accessible and not protected ones
+#perform request with different path (for word from a word list), then collect the accessible and not protected ones
 def collectPathList(wordDict):
     for word in wordDict:
         word = word.rstrip()
