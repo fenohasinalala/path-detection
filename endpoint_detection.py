@@ -2,6 +2,8 @@ import requests
 port = '5000'
 base_url = f'http://localhost:{port}'
 wordListFileName = "dir_list.txt"
+
+#open the word list file, and stop the script execution if error occurs
 try:
     wordList = open(wordListFileName, 'r')
 except Exception as e:
@@ -28,7 +30,7 @@ def isAccessiblePath(statusCode):
     # -> (500-599) except for 511
     return True
 
-
+#perform request for each different poth in the word list file, then collect the accessible and not protected ones
 def collectPathList(wordDict):
     for word in wordDict:
         word = word.rstrip()
@@ -38,8 +40,10 @@ def collectPathList(wordDict):
         if isAccessiblePath(response.status_code):
             pathList.append(url)
 
+
 collectPathList(wordList)
 
+# display all paths collected
 print("Accessible paths:")
 for url in pathList:
     print(url)
