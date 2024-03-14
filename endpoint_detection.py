@@ -1,6 +1,11 @@
 import requests
+import os
+
+desiredThreadsNumber = 2
+threadsNumber = min(desiredThreadsNumber, os.cpu_count())
+
 port = '5000'
-base_url = f'http://localhost:{port}'
+baseUrl = f'http://localhost:{port}'
 wordListFileName = "dir_list.txt"
 
 #open the word list file, and stop the script execution if error occurs
@@ -35,7 +40,7 @@ def collectPathList(wordDict):
     for word in wordDict:
         word = word.rstrip()
         print(f'trying {word}')
-        url = f'{base_url}/{word}'
+        url = f'{baseUrl}/{word}'
         response = requests.get(url)
         if isAccessiblePath(response.status_code):
             pathList.append(url)
@@ -47,3 +52,5 @@ collectPathList(wordList)
 print("Accessible paths:")
 for url in pathList:
     print(url)
+
+print("CPUs:",threadsNumber)
