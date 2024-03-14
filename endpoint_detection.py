@@ -57,7 +57,7 @@ pathList = []
 def collectPathList(wordDict, threadNumber):
     for word in wordDict:
         word = word.rstrip()
-        print(f'thead {threadNumber} - trying {word}')
+        print(f'Thread {threadNumber} - trying {word}')
         url = f'{baseUrl}/{word}'
         response = requests.get(url)
         if isAccessiblePath(response.status_code):
