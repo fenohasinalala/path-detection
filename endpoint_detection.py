@@ -5,6 +5,8 @@ import time
 
 start_time = time.time()
 
+##  FUNCTIONS DEFINITION
+
 #open a text file, and create create a list of words from it
 def createWordListFromFile(filename):
     wordlist = []
@@ -59,29 +61,35 @@ def collectPathList(wordDict, threadNumber):
         if isAccessiblePath(response.status_code):
             pathList.append(url)
 
+##  SPECIFY ALL PARAMS HERE
 port = '5000'
 baseUrl = f'http://127.0.0.1:{port}'
 wordListFileName = "dir_list.txt"
-desiredThreadsCount = 8 #specifie the number of threads you want
-threadsCount = min(max(1,desiredThreadsCount), os.cpu_count())
+desiredThreadsCount = 3 #specify the number of threads you want
+threadsCount = min(max(1,desiredThreadsCount), os.cpu_count()) #the thread number is between 1 and cpu max threads count
 
+## MAIN APP START
+# create a list of words list from filename
 wordList = createWordListFromFile(wordListFileName)
-#collectPathList(wordList)
+# divide the large list into smaller sublists according to the thread count
 subList = divideList(wordList,threadsCount)
-print(len(subList))
 
-threads = list()
-for index in range(threadsCount):
+threads = list() #create an empty list of threads
+for index in range(threadsCount): #iterate through the threads count
+    #create a new thread for each thread that launch the function collectPathList with the corresponding sublist of paths
     x = threading.Thread(target=collectPathList, args=(subList[index],index))
+    #add each Thread to "threads" list
     threads.append(x)
+    #then start the task of the thread
     x.start()
+#for each thread call the method join(). This ensures that the main thread waits for all the spawned threads to finish before proceeding further.
 for index, thread in enumerate(threads):
-        thread.join()
+    thread.join()
 
-
+#Track the time spent executing the application
 end_time = time.time()
 execution_time = end_time - start_time
-print("Execution time:", execution_time, "seconds")
+print("\n","Execution time:", execution_time, "seconds","\n")
 
 # display all paths collected
 print("Found the following path:")
