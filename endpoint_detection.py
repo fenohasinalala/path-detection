@@ -1,9 +1,9 @@
 import requests
+import re
 import os
 import threading
 import time
 
-start_time = time.time()
 
 ##  FUNCTIONS DEFINITION
 
@@ -61,17 +61,66 @@ def collectPathList(wordDict, threadNumber):
         if isAccessiblePath(response.status_code):
             pathList.append(url)
 
+def isValidUrl(url):
+    # Regular expression pattern for matching URLs
+    url_pattern = re.compile(
+        r'^(?:http|https)://'   # Scheme (http or https)
+        r'(?:\w+\.)+\w+'        # Domain name (e.g., example.com)
+        r'(?:\:\d+)?'           # Port number (optional)
+        r'(?:\/\S*)?'           # Path (optional)
+        r'(?:\.\w{2,})?'        # TLD (optional, minimum 2 characters)
+        r'$'
+    )
+    return bool(url_pattern.match(url))
+
+def getBaseUrlFromUserInput():
+    try:
+        url = input("Enter the base URL (example: http://127.0.0.1:5000 or https://api.publicapis.org) :\n")
+        if isValidUrl(url):
+            print(f"{url} is a valid URL.")
+            return url
+        print(f"{url} is NOT a valid URL.")
+        raise ValueError(f"{url} is NOT a valid URL.")
+    except Exception as e:
+        getBaseUrlFromUserInput()
+
+def isValidNumber(threadNumber, minThreadCount, maxThreadCount):
+    try:
+        threadNumber = int(threadNumber)
+        if minThreadCount <= threadNumber <= maxThreadCount:
+            return True
+        return False
+    except ValueError:
+        return False
+
+
+def setThreadCountFromUserInput():
+    try:
+        minThreadCount = 1
+        maxThreadCount = os.cpu_count()
+        threadNumber = input(f"Enter desired thread count between {minThreadCount} and {maxThreadCount} (max thread available):\n")
+        if isValidNumber(threadNumber,minThreadCount,maxThreadCount):
+            print(f"{threadNumber} is valid.")
+            return int(threadNumber)
+        print(f"{threadNumber} is NOT valid.")
+        raise ValueError(f"{threadNumber} is NOT valid.")
+    except Exception as e:
+        setThreadCountFromUserInput()
+
 ##  SPECIFY ALL PARAMS HERE
-port = '5000'
-baseUrl = f'http://127.0.0.1:{port}'
+baseUrl = getBaseUrlFromUserInput()
+threadsCount = setThreadCountFromUserInput()
+start_time = time.time()
+
 wordListFileName = "dir_list.txt"
-desiredThreadsCount = 3 #specify the number of threads you want
-threadsCount = min(max(1,desiredThreadsCount), os.cpu_count()) #the thread number is between 1 and cpu max threads count
+#desiredThreadsCount = 4 #specify the number of threads you want
+#threadsCount = min(max(1,desiredThreadsCount), os.cpu_count()) #the thread number is between 1 and cpu max threads count
+
 
 ## MAIN APP START
 # create a list of words list from filename
 wordList = createWordListFromFile(wordListFileName)
-# divide the large list into smaller sublists according to the thread count
+# divide the large list into smaller sublists accordin to the thread count
 subList = divideList(wordList,threadsCount)
 
 threads = list() #create an empty list of threads
