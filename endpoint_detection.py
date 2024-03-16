@@ -5,7 +5,6 @@ import time
 
 start_time = time.time()
 
-
 #open a text file, and create create a list of words from it
 def createWordListFromFile(filename):
     wordlist = []
@@ -32,18 +31,18 @@ def divideList(word_list, x):
 
 #check with http response status code if the path from request is accessible and not protected
 def isAccessiblePath(statusCode):
-    #get client error status code, resource protected or not available ; type of request not allowed by the server
+    #get client error status code: resource protected or not available ; type of request not allowed by the server
     if (statusCode in (401,403,404,405,407,410,414,418,421,451)):
         return False
-    #get server error status code, need network authentication
+    #get server error status code: need network authentication
     if (statusCode == 511):
         return False
     #get information response status code   -> (100-199)
     #get successful response status code    -> (200-299)
     #get redirection status code            -> (300-399)
-    #get client error status code, need to change to header or the body 
+    #get client error status code: need to change to header or the body 
     # -> (400-499) except for (401,403,404,405,407,410,414,418,421,451)
-    #get server error status code, implementation error or server connot handle unexpected client request or server not fonctional at the moment 
+    #get server error status code: implementation error or server connot handle unexpected client request or server not fonctional at the moment 
     # -> (500-599) except for 511
     return True
 
@@ -61,7 +60,7 @@ def collectPathList(wordDict, threadNumber):
             pathList.append(url)
 
 port = '5000'
-baseUrl = f'http://localhost:{port}'
+baseUrl = f'http://127.0.0.1:{port}'
 wordListFileName = "dir_list.txt"
 desiredThreadsCount = 8 #specifie the number of threads you want
 threadsCount = min(max(1,desiredThreadsCount), os.cpu_count())
@@ -79,11 +78,12 @@ for index in range(threadsCount):
 for index, thread in enumerate(threads):
         thread.join()
 
-# display all paths collected
-print("Accessible paths:")
-for url in pathList:
-    print(url)
 
 end_time = time.time()
 execution_time = end_time - start_time
 print("Execution time:", execution_time, "seconds")
+
+# display all paths collected
+print("Found the following path:")
+for url in pathList:
+    print(url)
