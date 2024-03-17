@@ -125,9 +125,6 @@ setThreadCountFromUserInput()
 start_time = time.time()
 
 wordListFileName = "dir_list.txt"
-# desiredThreadsCount = 4 #specify the number of threads you want
-# threadsCount = min(max(1,desiredThreadsCount), os.cpu_count()) #the thread number is between 1 and cpu max threads count
-
 
 # create a list of words list from filename
 wordList = createWordListFromFile(wordListFileName)
@@ -153,12 +150,12 @@ if exception_flag.is_set():
     print("Enter a working server address")
     exit(1)  # Exit with error code 1
 
+# display all paths collected
+print("\n", "Found the following path:")
+for url in pathList:
+    print(url)
+
 # Track the time spent executing the application
 end_time = time.time()
 execution_time = end_time - start_time
 print("\n", "Execution time:", execution_time, "seconds", "\n")
-
-# display all paths collected
-print("Found the following path:")
-for url in pathList:
-    print(url)
