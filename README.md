@@ -75,3 +75,11 @@ python Main.py
 ## License
 
 This project is licensed under the [MIT License](LICENSE.md)
+
+## About the author
+
+Name: Lova Fenohasina Lala RAFANOMEZANTSOA
+
+Email: <hei.lova.31@gmail.com>
+
+STD Reference: STD21107
