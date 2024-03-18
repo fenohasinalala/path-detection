@@ -5,7 +5,12 @@ import time
 import requests
 import logging
 
-from WordListFunction import createWordListFromFile, divideList
+from WordListFunction import (
+    createWordListFromFile,
+    createWordListFromFileList,
+    divideList,
+    getWordListFilename,
+)
 
 # Configure logging
 logging.basicConfig(
@@ -116,6 +121,7 @@ def collectPathList(wordDict, threadNumber):
 
 
 ##  SPECIFY ALL PARAMS HERE
+baseDirectory = "word_list"
 threadsCount = 0  # Number of threads
 baseUrl = None
 pathList = []
@@ -127,8 +133,8 @@ start_time = time.time()
 wordListFileName = "dir_list.txt"
 
 # create a list of words list from filename
-wordList = createWordListFromFile(wordListFileName)
-print(wordList)
+files = getWordListFilename(baseDirectory)
+wordList = createWordListFromFileList(baseDirectory, files)
 # divide the large list into smaller sublists accordin to the thread count
 subList = divideList(wordList, threadsCount)
 

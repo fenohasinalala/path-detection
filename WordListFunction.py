@@ -1,4 +1,12 @@
+import os
+
+
 ##  FUNCTIONS DEFINITION
+def getWordListFilename(directory):
+    files = os.listdir(directory)
+    # Filtering only the files.
+    files = [f for f in files if os.path.isfile(directory + "/" + f)]
+    return files
 
 
 def createWordListFromFile(filename):
@@ -13,6 +21,14 @@ def createWordListFromFile(filename):
         print("Word list file cannot be opened:", filename)
         print("Error:", e)
         exit()
+
+
+def createWordListFromFileList(directory, files):
+    wordlist = []
+    for file in files:
+        retrieveWord = createWordListFromFile(f"{directory}/{file}")
+        wordlist = wordlist + retrieveWord
+    return wordlist
 
 
 # divide a list into x sub-lists, here x represents the threads number and the list is the words list
