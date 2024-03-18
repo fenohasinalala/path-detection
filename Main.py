@@ -6,7 +6,6 @@ import requests
 import logging
 
 from WordListFunction import (
-    createWordListFromFile,
     createWordListFromFileList,
     divideList,
     getWordListFilename,
