@@ -13,16 +13,22 @@ The user can specify the desired theard to use; the max thread capacity of the C
 This application also has a logger for errors, all errors that occur are logged in the 'error.log' file.
 
 It follows the coding standard PEP8 for Python and uses Ruff as a linter and formatter.
-Here is how to use Ruff: 
-- to install : 
+Here is how to use Ruff:
+
+- to install :
+
 ```bash
 pip install ruff
 ```
-- to lint : 
+
+- to lint :
+
 ```bash
 ruff check . # can add '--fix' parameter if small fix
 ```
-- to format : 
+
+- to format :
+
 ```bash
 ruff format .
 ```
@@ -48,22 +54,24 @@ pip install -r requirements.txt
 ## Usage
 
 1- Configuration :
-- modify the base directory where all wordlist files should be stored, with a '.env' file (default directory: word_list)
+
+- can custom the base directory where all wordlist files should be stored, with a '.env' file (or stay with default directory: word_list)
 - add as many wordlist files as you want in the specified base directory
 
 2- Before launching the application, make sure that the server is running correctly.
 
 3- Launch the application as follows:
+
 ```bash
 # To run the application
 python Main.py
 ```
 
 4- Enter the two following parameters:
-- base URL as an example: 'http://127.0.0.1:5000'
-- desired thread count between 1 and max CPU thread count (depending on the computer)
 
+- base URL as an example: '<http://127.0.0.1:5000>'
+- desired thread count between 1 and max CPU thread count (depending on the computer)
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE.md).
+This project is licensed under the [MIT License](LICENSE.md)
