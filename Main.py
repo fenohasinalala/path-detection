@@ -19,11 +19,11 @@ logging.basicConfig(
 )
 
 
-# Load environment variables from .env file
+# Load environment variables from the .env file
 load_dotenv()
 
 
-# check if url given is by user is valid
+# check if url given by user is valid
 def isValidUrl(url):
     # Regular expression pattern for matching URLs
     url_pattern = re.compile(
@@ -37,7 +37,7 @@ def isValidUrl(url):
     return bool(url_pattern.match(url))
 
 
-# set base url from user input and retry if not valid
+# set base URL from user input and retry if not valid
 def setBaseUrlFromUserInput():
     global baseUrl
     try:
@@ -84,12 +84,12 @@ def setThreadCountFromUserInput():
         setThreadCountFromUserInput()
 
 
-# check with http response status code if the path from request is accessible and not protected
+# check with the HTTP response status code if the path from a request is accessible and not protected
 def isAccessiblePath(statusCode):
     # get server error status code: need network authentication
     if statusCode == 511:
         return False
-    # get client error status code: resource protected or not available ; type of request not allowed by the server
+    # get client error status code: resource protected or not available; type of request not allowed by the server
     if statusCode in (401, 403, 404, 405, 407, 410, 414, 418, 421, 451):
         return False
     # get information response status code   -> (100-199)
@@ -97,12 +97,12 @@ def isAccessiblePath(statusCode):
     # get redirection status code            -> (300-399)
     # get client error status code: need to change to header or the body
     # -> (400-499) except for (401,403,404,405,407,410,414,418,421,451)
-    # get server error status code: implementation error or server connot handle unexpected client request or server not fonctional at the moment
+    # get server error status code: implementation error or server cannot handle unexpected client request or server not functional at the moment
     # -> (500-599) except for 511
     return True
 
 
-# perform request with different path (for word from a word list), then collect the accessible and not protected ones
+# perform requests with different paths (for word from a word list), then collect the accessible and not protected ones
 def collectPathList(wordDict, threadNumber):
     global exception_flag  # To access the event flag
     try:
@@ -137,21 +137,21 @@ start_time = time.time()
 
 wordListFileName = "dir_list.txt"
 
-# create a list of words list from filename
+# create a list of words list from the directory containing words list files
 files = getFilenamesFromDirectory(baseDirectory)
 wordList = createWordListFromFileList(baseDirectory, files)
-# divide the large list into smaller sublists accordin to the thread count
+# divide the large list into smaller sublists according to the thread count
 subList = divideList(wordList, threadsCount)
 
-threads = list()  # create an empty list of threads
+threads = list()  # Create an empty list of threads
 for index in range(threadsCount):  # iterate through the threads count
-    # create a new thread for each thread that launch the function collectPathList with the corresponding sublist of paths
+    # create a new thread for each thread that launches the function collectPathList with the corresponding sublist of paths
     x = threading.Thread(target=collectPathList, args=(subList[index], index))
     # add each Thread to "threads" list
     threads.append(x)
     # then start the task of the thread
     x.start()
-# for each thread call the method join(). This ensures that the main thread waits for all the spawned threads to finish before proceeding further.
+# For each thread call the method join(). This ensures that the main thread waits for all the spawned threads to finish before proceeding further.
 for index, thread in enumerate(threads):
     thread.join()
 
@@ -166,7 +166,7 @@ print("\n", "Found the following path:")
 for url in pathList:
     print(url)
 
-# Track the time spent executing the application
+# Track the time spent executing the application after the user inputs to the end of the execution
 end_time = time.time()
 execution_time = end_time - start_time
 print("\n", "Execution time:", execution_time, "seconds", "\n")

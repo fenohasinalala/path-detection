@@ -32,7 +32,7 @@ def createWordListFromFile(filename):
         exit()
 
 
-# create word list from a list of files
+# create a word list from a list of files
 def createWordListFromFileList(directory, files):
     wordlist = []
     for file in files:
@@ -41,7 +41,7 @@ def createWordListFromFileList(directory, files):
     return wordlist
 
 
-# divide a list into x sub-lists, here x represents the threads number and the list is the words list
+# divide a list into x sub-lists, where x represents the thread number and the list is the word list
 def divideList(word_list, x):
     # Calculate the length of each sublist
     sublist_length = (len(word_list) + x - 1) // x  # Round up division
