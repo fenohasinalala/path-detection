@@ -24,7 +24,7 @@ pip install ruff
 - to lint :
 
 ```bash
-ruff check . # can add '--fix' parameter if small fix
+ruff check . # can add '--fix' parameter for small fix
 ```
 
 - to format :
