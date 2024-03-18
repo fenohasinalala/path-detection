@@ -22,6 +22,7 @@ logging.basicConfig(
 # Load environment variables from .env file
 load_dotenv()
 
+
 # check if url given is by user is valid
 def isValidUrl(url):
     # Regular expression pattern for matching URLs
@@ -111,7 +112,9 @@ def collectPathList(wordDict, threadNumber):
             url = f"{baseUrl}/{word}"
             response = requests.get(url)
             if isAccessiblePath(response.status_code):
-                pathList.append(url)
+                # not duplicate path
+                if url not in pathList:
+                    pathList.append(url)
     except Exception as e:
         logging.error(e)
         print(
@@ -123,7 +126,7 @@ def collectPathList(wordDict, threadNumber):
 
 
 ##  SPECIFY ALL PARAMS HERE
-baseDirectory = os.getenv('baseDirectory')
+baseDirectory = os.getenv("baseDirectory", "word_list")
 threadsCount = 0  # Number of threads
 baseUrl = None
 pathList = []

@@ -1,15 +1,20 @@
 import os
-
+import logging
 
 ##  FUNCTIONS DEFINITION
 
 
 # get files from a specified directory
 def getFilenamesFromDirectory(directory):
-    files = os.listdir(directory)
-    # Filtering only the files.
-    files = [f for f in files if os.path.isfile(directory + "/" + f)]
-    return files
+    try:
+        files = os.listdir(directory)
+        # Filtering only the files.
+        files = [f for f in files if os.path.isfile(directory + "/" + f)]
+        return files
+    except Exception as e:
+        print("Directory cannot be opened: ", directory)
+        logging.error(e)
+        exit()
 
 
 # create a word list from one file
@@ -22,8 +27,8 @@ def createWordListFromFile(filename):
                 wordlist.append(line.strip())
         return wordlist
     except Exception as e:
-        print("Word list file cannot be opened:", filename)
-        print("Error:", e)
+        print("Word list file cannot be opened: ", filename)
+        logging.error(e)
         exit()
 
 
