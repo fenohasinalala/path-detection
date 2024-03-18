@@ -34,7 +34,7 @@ def isValidUrl(url):
         r"(?:\.\w{2,})?"  # TLD (optional, minimum 2 characters)
         r"$"
     )
-    return bool(url_pattern.match(url))
+    return bool(url_pattern.match(url.strip()))
 
 
 # set base URL from user input and retry if not valid
