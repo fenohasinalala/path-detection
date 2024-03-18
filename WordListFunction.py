@@ -2,13 +2,17 @@ import os
 
 
 ##  FUNCTIONS DEFINITION
-def getWordListFilename(directory):
+
+
+# get files from a specified directory
+def getFilenamesFromDirectory(directory):
     files = os.listdir(directory)
     # Filtering only the files.
     files = [f for f in files if os.path.isfile(directory + "/" + f)]
     return files
 
 
+# create a word list from one file
 def createWordListFromFile(filename):
     wordlist = []
     try:
@@ -23,6 +27,7 @@ def createWordListFromFile(filename):
         exit()
 
 
+# create word list from a list of files
 def createWordListFromFileList(directory, files):
     wordlist = []
     for file in files:

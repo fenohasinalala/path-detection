@@ -4,11 +4,11 @@ import threading
 import time
 import requests
 import logging
-
+from dotenv import load_dotenv
 from WordListFunction import (
     createWordListFromFileList,
     divideList,
-    getWordListFilename,
+    getFilenamesFromDirectory,
 )
 
 # Configure logging
@@ -18,6 +18,9 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
 )
 
+
+# Load environment variables from .env file
+load_dotenv()
 
 # check if url given is by user is valid
 def isValidUrl(url):
@@ -120,7 +123,7 @@ def collectPathList(wordDict, threadNumber):
 
 
 ##  SPECIFY ALL PARAMS HERE
-baseDirectory = "word_list"
+baseDirectory = os.getenv('baseDirectory')
 threadsCount = 0  # Number of threads
 baseUrl = None
 pathList = []
@@ -132,7 +135,7 @@ start_time = time.time()
 wordListFileName = "dir_list.txt"
 
 # create a list of words list from filename
-files = getWordListFilename(baseDirectory)
+files = getFilenamesFromDirectory(baseDirectory)
 wordList = createWordListFromFileList(baseDirectory, files)
 # divide the large list into smaller sublists accordin to the thread count
 subList = divideList(wordList, threadsCount)
